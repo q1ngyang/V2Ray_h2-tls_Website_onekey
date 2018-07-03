@@ -3,7 +3,7 @@
 #====================================================
 #	System Request:Debian 7+/Ubuntu 15+/Centos 6+
 #	Author: wulabing & dylanbai8
-#	Dscription: V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host)+Rinetd BBR
+#	Dscription: V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host)
 #	Blog: https://www.wulabing.com https://oo0.bid
 #	Official document: www.v2ray.com
 #====================================================
@@ -32,7 +32,7 @@ source /etc/os-release
 #脚本欢迎语
 v2ray_hello(){
 	echo ""
-	echo -e "${Info} ${GreenBG} 你正在执行 V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host)+Rinetd BBR 一键安装脚本 ${Font}"
+	echo -e "${Info} ${GreenBG} 你正在执行 V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host) 一键安装脚本 ${Font}"
 	echo ""
 	random_number
 }
@@ -138,14 +138,9 @@ apache_uninstall(){
 	systemctl stop v2ray >/dev/null 2>&1
 	killall -9 v2ray >/dev/null 2>&1
 
-	systemctl disable rinetd-bbr >/dev/null 2>&1
-	systemctl stop rinetd-bbr >/dev/null 2>&1
-	killall -9 rinetd-bbr >/dev/null 2>&1
-
 	rm -rf /www >/dev/null 2>&1
 	rm -rf /usr/local/bin/caddy /etc/caddy /etc/systemd/system/caddy.service >/dev/null 2>&1
 	rm -rf /etc/v2ray/config.json /etc/v2ray/user.json /etc/systemd/system/v2ray.service >/dev/null 2>&1
-	rm -rf /usr/bin/rinetd-bbr /etc/rinetd-bbr.conf /etc/systemd/system/rinetd-bbr.service >/dev/null 2>&1
 }
 
 #安装各种依赖工具
@@ -519,37 +514,6 @@ modify_userjson(){
 	sed -i "s/SETPATH/${v2raypath}/g" "${v2ray_user}"
 }
 
-#安装bbr端口加速
-rinetdbbr_install(){
-	export RINET_URL="https://github.com/dylanbai8/V2Ray_h2-tls_Website_onekey/raw/master/bbr/rinetd_bbr_powered"
-	IFACE=$(ip -4 addr | awk '{if ($1 ~ /inet/ && $NF ~ /^[ve]/) {a=$NF}} END{print a}')
-
-	curl -L "${RINET_URL}" >/usr/bin/rinetd-bbr
-	chmod +x /usr/bin/rinetd-bbr
-	judge "rinetd-bbr 安装"
-
-	touch /etc/rinetd-bbr.conf
-	cat <<EOF >> /etc/rinetd-bbr.conf
-0.0.0.0 ${port} 0.0.0.0 ${port}
-EOF
-
-	touch /etc/systemd/system/rinetd-bbr.service
-	cat <<EOF > /etc/systemd/system/rinetd-bbr.service
-[Unit]
-Description=rinetd with bbr
-[Service]
-ExecStart=/usr/bin/rinetd-bbr -f -c /etc/rinetd-bbr.conf raw ${IFACE}
-Restart=always
-User=root
-[Install]
-WantedBy=multi-user.target
-EOF
-	judge "rinetd-bbr 自启动配置"
-
-	systemctl enable rinetd-bbr >/dev/null 2>&1
-	systemctl start rinetd-bbr
-	judge "rinetd-bbr 启动"
-}
 
 #检查ssl证书是否生成
 check_ssl(){
@@ -580,7 +544,7 @@ start_process_systemd(){
 show_information(){
 	clear
 	echo ""
-	echo -e "${Info} ${GreenBG} V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host)+Rinetd BBR 安装成功 ${Font}"
+	echo -e "${Info} ${GreenBG} V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host) 安装成功 ${Font}"
 	echo -e "----------------------------------------------------------"
 	echo -e "${Green} 【您的 V2ray 配置信息】 ${Font}"
 	echo -e "${Green} 地址（address）：${Font} ${domain}"
@@ -626,7 +590,6 @@ main(){
 	v2ray_conf_add
 	caddy_conf_add
 	user_config_add
-	rinetdbbr_install
 	win64_v2ray
 	check_ssl
 	show_information
