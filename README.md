@@ -1,6 +1,6 @@
 # V2RAY 基于 CADDY 的 VMESS+H2+TLS+Website(Use Host) 
 
-### HTTP Header 分流，自带 Website 伪装站点 http 强制跳转 https，支持ssl非443端口，自带Rinetd BBR加速 支持OpenVZ，自动生成客户端config.json配置文件 web在线下载，重装自动清除残余的Http服务，每天自动升级最新的V2ray内核，支持 cdn 嵌套，自动续签ssl证书，自动生成Windows客户端和便捷启动脚本 一键添加开机自启动服务 一键开启系统ie代理。
+### HTTP Header 分流，自带 Website 伪装站点 http 强制跳转 https，支持ssl非443端口，自动生成客户端config.json配置文件 web在线下载，重装自动清除残余的Http服务，每天自动升级最新的V2ray内核，支持 cdn 嵌套，自动续签ssl证书，自动生成Windows客户端和便捷启动脚本 一键添加开机自启动服务 一键开启系统ie代理。
 
 使用：1.解析好域名； 2.运行一键安装脚本；
 ```
